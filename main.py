@@ -36,14 +36,14 @@ class Stadium:
 
 
 class Match: 
-    def __init__(self, id, number, date, group, stadium_id, home_id, away_id) -> None:
+    def __init__(self, id, number, date, group, stadium, home, away) -> None:
         self.id = id
         self.number = number
         self.date = date
         self.group = group
-        self.stadium_id = stadium_id
-        self.home_id = home_id
-        self.away_id = away_id
+        self.stadium = stadium
+        self.home = home
+        self.away = away
 
 def getTeams():
     res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/teams.json')
@@ -58,9 +58,12 @@ def getTeams():
     for i in data:
         teams.append(Team(i['id'], i['code'], i['name'], i['group']))
 
-    print(teams[0])
-
     return teams
+
+def findTeam(teams, team_id):
+    for t in teams:
+        if(t.id == team_id):
+            return t
 
 def getStadiums():
     res = requests.get("https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/stadiums.json")
@@ -84,10 +87,14 @@ def getStadiums():
 
         stadiums.append(stadium)
 
-    print(stadiums[0].restaurants[0].products[0].name)
     return stadiums
 
-def getMatches():
+def findStadium(stadiums, stadium_id):
+    for s in stadiums:
+        if(s.id == stadium_id):
+            return s
+
+def getMatches(teams, stadiums):
     res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/matches.json')
     if(res.status_code != 200):
         print("No se pudo obtener los datos de los partidos")
@@ -95,16 +102,37 @@ def getMatches():
     
     data = res.json()
 
-    matches: list[Match] = []
+    matches = []
 
     for m in data: 
-        match = Match(m['id'], m['number'], m['date'], m['group'], m['stadium_id'], m['home']['id'], m['away']['id'])
+        stadium = findStadium(stadiums, m['stadium_id'])
+        home = findTeam(teams, m['home']['id'])
+        away = findTeam(teams, m['away']['id'])
+        match = Match(m['id'], m['number'], m['date'], m['group'], stadium, home, away)
 
         matches.append(match)
 
-    print(matches[0].away_id)
- 
     return matches
 
-getMatches()
+class MatchStadiumManager:
+    def __init__(self, stadiums, matches) -> None:
+        self.stadiums = stadiums
+        self.matches = matches
+
+    def searchByCountry(self, country):
+        results = []
+        for match in self.matches:
+            if(country in match.home.name):
+                results.append(match)
+            elif(country in match.away.name):
+                results.append(match)
+        return results
+
+teams = getTeams()
+stadiums = getStadiums()
+matches = getMatches(teams, stadiums)
+
+matchStadiumManager = MatchStadiumManager(stadiums, matches)
+
+print(matchStadiumManager.searchByCountry("Germany"))
 
