@@ -119,20 +119,32 @@ class MatchStadiumManager:
         self.stadiums = stadiums
         self.matches = matches
 
-    def searchByCountry(self, country):
+    def searchByCountry(self, country_name):
         results = []
         for match in self.matches:
-            if(country in match.home.name):
+            if country_name in match.home.name :
                 results.append(match)
-            elif(country in match.away.name):
+            elif country_name in match.away.name:
                 results.append(match)
         return results
+
+    def searchByStadium(self, stadium_name):
+        results = []
+        for match in self.matches:
+            if stadium_name in match.stadium.name:
+                results.append(match)
+        return results
+
+    def searchByDate(self, date):
+        results = []
+        for match in self.matches:
+            if date in match.date:
+                results.append(match)
+        return results
+
 
 teams = getTeams()
 stadiums = getStadiums()
 matches = getMatches(teams, stadiums)
 
 matchStadiumManager = MatchStadiumManager(stadiums, matches)
-
-print(matchStadiumManager.searchByCountry("Germany"))
-
