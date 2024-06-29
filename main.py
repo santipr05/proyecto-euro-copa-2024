@@ -1,9 +1,14 @@
+import requests
+
 class Team :
     def __init__(self, id, code, name, group) -> None:
         self.id = id
         self.code = code
         self.name = name
         self.group = group
+
+    def __str__(self) -> str:
+        return f"(Team) id: {self.id}, name: {self.name}, code: {self.code}, group: {self.group}"
 
 
 class RestaurantItem:
@@ -40,3 +45,21 @@ class Match:
         self.home_id = home_id
         self.away_id = away_id
 
+def getTeams():
+    res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/teams.json')
+    if(res.status_code != 200):
+        print("No se pudo obtener los datos de los equipos")
+        return
+    
+    data = res.json()
+
+    teams = []
+
+    for i in data:
+        teams.append(Team(i['id'], i['code'], i['name'], i['group']))
+
+    print(teams[0])
+
+    return teams
+
+getTeams()
