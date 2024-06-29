@@ -28,11 +28,10 @@ class Restaurant:
 
 
 class Stadium:
-    def __init__(self, id, name, city, capacity) -> None:
+    def __init__(self, id, name, city) -> None:
         self.id = id
         self.name = name
         self.city = city
-        self.capacity = capacity
         self.restaurants = []
 
 
@@ -62,4 +61,29 @@ def getTeams():
 
     return teams
 
-getTeams()
+def getStadiums():
+    res = requests.get("https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/stadiums.json")
+    if(res.status_code != 200):
+        print("No se pudo obtener los datos de los equipos")
+        return
+    
+    data = res.json()
+
+    stadiums = []
+
+    for s in data:
+        stadium = Stadium(s['id'], s['name'], s['city'])
+        for r in s['restaurants']:
+            restaurant = Restaurant(r['name'])
+            for i in r['products']:
+                product = RestaurantItem(i['name'], i['price'], i['stock'], i['adicional'])
+                restaurant.products.append(product)
+
+            stadium.restaurants.append(restaurant)
+
+        stadiums.append(stadium)
+
+    print(stadiums[0].restaurants[0].products[0].name)
+    return stadiums
+
+getStadiums()
