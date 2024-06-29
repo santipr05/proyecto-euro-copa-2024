@@ -1,5 +1,5 @@
 import requests
-from data_objects import Team, Stadium, Match
+from data_objects import Team, Stadium, Match, Restaurant, RestaurantItem
 
 def getTeams():
     res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/teams.json')
