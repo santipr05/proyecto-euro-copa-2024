@@ -29,3 +29,14 @@ class Stadium:
         self.city = city
         self.capacity = capacity
         self.restaurants = []
+
+
+class Match: 
+    def __init__(self, id, number, date, group, home_id, away_id) -> None:
+        self.id = id
+        self.number = number
+        self.date = date
+        self.group = group
+        self.home_id = home_id
+        self.away_id = away_id
+
