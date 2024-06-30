@@ -79,6 +79,7 @@ class Menu:
         self.title = title
 
     def printTitle(self):
+        print()
         print("-" * (len(self.title) + 4))
         print(f"| {self.title} |")
         print("-" * (len(self.title) + 4))
@@ -96,9 +97,13 @@ class Menu:
 
                 i += 1
 
-            print(f"{i} Salir")
+            print(f"{i}. Salir")
 
-            selection = int(input("Seleccione una opcion: "))
+            try:
+                selection = int(input("Seleccione una opcion: "))
+            except ValueError:
+                print("Opcion invalida.")
+                continue
 
             if selection <= 0 or selection > len(self.actions) + 1:
                 print("Opcion invalida.")
@@ -138,10 +143,35 @@ class MatchStadiumManager:
                 results.append(match)
         return results
 
+    def searchByCountryMenu(self):
+        country = input("Escriba el pais el pais: ")
+        matches = self.searchByCountry(country)
+        print(f"Resultados para el pais {country}")
+        for match in matches:
+            print("\t", match)
+
+    def searchByStadiumMenu(self):
+        stadium = input("Escriba el estadio: ")
+        matches = self.searchByStadium(stadium)
+        print(f"Resultados para el estadio {stadium}")
+        for match in matches:
+            print("\t", match)
+
+    def searchByDateMenu(self):
+        date = input("Introduzca la fecha (año-mes-dia): ")
+        matches = self.searchByDate(date)
+        print(f"Resultados para la fecha: {date}")
+        for match in matches:
+            print("\t", match)
+
     def menu(self):
         printDebugInfo("Match Stadium Manager")
 
-        menu = Menu("Buscar Partidos", {})
+        menu = Menu("Buscar Partidos", {
+            "Buscar por pais": self.searchByCountryMenu,
+            "Buscar por estadio": self.searchByStadiumMenu,
+            "Buscar por fecha": self.searchByDateMenu,
+        })
         menu.display()
 
 class TicketManager:

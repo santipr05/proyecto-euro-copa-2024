@@ -1,5 +1,3 @@
-import math
-
 from utils import isVapireNumber
 
 class Team :
@@ -47,6 +45,9 @@ class Match:
         self.stadium = stadium
         self.home = home
         self.away = away
+
+    def __str__(self) -> str:
+        return f"{self.home.name} vs {self.away.name} | {self.date} - Grupo {self.group} - {self.stadium.name}"
 
 class Ticket:
     def __init__(self, name, ci, age, match, vip, row, col, code) -> None:
