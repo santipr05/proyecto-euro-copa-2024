@@ -1,5 +1,24 @@
 import math
 
+IS_DEV = True
+
+def printDebugInfo(message):
+    if IS_DEV:
+        print(f"[Debug]: {message}")
+
+def inputInt(propmt, errorMsg = "Ingrese un numero."):
+    result = 0
+    valid = False
+
+    while not valid:
+        try:
+            result = int(input(propmt))
+            valid = True
+        except ValueError:
+            print(errorMsg)
+
+    return result
+
 def isVapireNumber(n):
     n_digits = math.ceil(math.log10(n))
     digits = []
