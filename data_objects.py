@@ -1,3 +1,7 @@
+import math
+
+from utils import isVapireNumber
+
 class Team :
     def __init__(self, id, code, name, group) -> None:
         self.id = id
@@ -26,10 +30,11 @@ class Restaurant:
 
 
 class Stadium:
-    def __init__(self, id, name, city) -> None:
+    def __init__(self, id, name, city, capacity) -> None:
         self.id = id
         self.name = name
         self.city = city
+        self.capacity = capacity
         self.restaurants = []
 
 
@@ -42,3 +47,28 @@ class Match:
         self.stadium = stadium
         self.home = home
         self.away = away
+
+class Ticket:
+    def __init__(self, name, ci, age, match, vip, row, col, code) -> None:
+        self.name = name
+        self.ci = ci
+        self.age = age
+        self.match = match
+        self.vip = vip
+        self.row = row
+        self.col = col
+        self.code = code
+        self.cost = self.getCost()
+
+    def getCost(self) -> float:
+        cost = 35
+        if self.vip:
+            cost = 75
+
+        if isVapireNumber(self.ci):
+            cost = cost * 0.5
+        
+        # Sumar el iva
+        cost = cost * 0.16
+
+        return cost
