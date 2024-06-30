@@ -1,6 +1,9 @@
 import requests
 from data_objects import Team, Stadium, Match, Restaurant, RestaurantItem, Ticket
 
+def printDebugInfo(message):
+    print(f"[Debug]: {message}")
+
 def getTeams():
     res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/teams.json')
     if(res.status_code != 200):
@@ -70,6 +73,42 @@ def getMatches(teams, stadiums):
 
     return matches
 
+class Menu:
+    def __init__(self, title, actions):
+        self.actions = actions
+        self.title = title
+
+    def printTitle(self):
+        print("-" * (len(self.title) + 4))
+        print(f"| {self.title} |")
+        print("-" * (len(self.title) + 4))
+
+
+    def display(self):
+
+        selection = 0
+
+        while selection != len(self.actions) + 1:
+            self.printTitle()
+            i = 1
+            for k, _ in self.actions.items():
+                print(f"{i}. {k}")
+
+                i += 1
+
+            print(f"{i} Salir")
+
+            selection = int(input("Seleccione una opcion: "))
+
+            if selection <= 0 or selection > len(self.actions) + 1:
+                print("Opcion invalida.")
+                continue
+
+            if selection != len(self.actions) + 1:
+                key = list(self.actions)[selection - 1]
+                self.actions[key]()
+
+
 # TODO: Hacer Menu
 class MatchStadiumManager:
     def __init__(self, stadiums, matches) -> None:
@@ -98,6 +137,12 @@ class MatchStadiumManager:
             if date in match.date:
                 results.append(match)
         return results
+
+    def menu(self):
+        printDebugInfo("Match Stadium Manager")
+
+        menu = Menu("Buscar Partidos", {})
+        menu.display()
 
 class TicketManager:
     def __init__(self, matches) -> None:
@@ -163,14 +208,15 @@ class RestaurantManager:
 class Program:
     debug = True
 
-    def printDebugInfo(self, message):
-        print(f"[Debug]: {message}")
-
     def __init__(self) -> None:
-        self.printDebugInfo("Obteniendo datos de la api")
-        self.teams = getTeams()
-        self.stadiums = getStadiums()
-        self.matches = getMatches(self.teams, self.stadiums)
+        printDebugInfo("Obteniendo datos de la api")
+        try:
+            self.teams = getTeams()
+            self.stadiums = getStadiums()
+            self.matches = getMatches(self.teams, self.stadiums)
+        except requests.exceptions.ConnectionError:
+            print("Error de coneccion: No se pudo obtener los datos de la api")
+
         # TODO: Guardar datos en archivos de texto
 
         self.match_stadium_manager = MatchStadiumManager(self.stadiums, self.matches)
@@ -178,30 +224,15 @@ class Program:
         self.restaurant_manager = RestaurantManager(self.stadiums)
 
     def main_menu(self):
-        selection = 0
+        menu = Menu("Menu principal", {
+            "Buscar Partidos": self.match_stadium_manager.menu,
+            # "Comprar Entrada": 0,
+            # "Chequear Entrada": 0,
+            # "Asistir al partido": 0,
+            # "Estadisticas": 0,
+        })
 
-        options = [
-            "Buscar Partidos",
-            "Comprar Entrada",
-            "Chequear Entrada",
-            "Asistir al partido",
-            "Estadisticas",
-            "Salir"
-        ]
-
-        while(selection != str(len(options))):
-            print("==================")
-            print("| Menu principal |")
-            print("==================")
-
-
-            print("Opciones:")
-            for i, option in enumerate(options):
-                print(f"{i + 1}. {option}")
-
-            selection = input("Seleccione una opcion: ")
-
-            print(f"Seleccionaste: {selection}")
+        menu.display()
 
 
 program = Program()
