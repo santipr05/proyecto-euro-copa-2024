@@ -61,15 +61,20 @@ class Ticket:
         self.code = code
         self.cost = self.getCost()
 
-    def getCost(self) -> float:
+    def getCost(self):
         cost = 35
         if self.vip:
             cost = 75
+
+        return cost
+
+    def calculateCost(self) -> float:
+        cost = self.getCost()
 
         if isVapireNumber(self.ci):
             cost = cost * 0.5
         
         # Sumar el iva
-        cost = cost * 0.16
+        cost = cost * 1.16
 
         return cost
