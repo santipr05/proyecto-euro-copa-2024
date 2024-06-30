@@ -1,5 +1,5 @@
 import requests
-from data_objects import Team, Stadium, Match, Restaurant, RestaurantItem
+from data_objects import Team, Stadium, Match, Restaurant, RestaurantItem, Ticket
 
 def getTeams():
     res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/teams.json')
@@ -160,8 +160,49 @@ class RestaurantManager:
             if p.price <= top_price and p.price >= bottom_price:
                 results.append(p)
 
-# teams = getTeams()
-# stadiums = getStadiums()
-# matches = getMatches(teams, stadiums)
-#
-# matchStadiumManager = MatchStadiumManager(stadiums, matches)
+class Program:
+    debug = True
+
+    def printDebugInfo(self, message):
+        print(f"[Debug]: {message}")
+
+    def __init__(self) -> None:
+        self.printDebugInfo("Obteniendo datos de la api")
+        self.teams = getTeams()
+        self.stadiums = getStadiums()
+        self.matches = getMatches(self.teams, self.stadiums)
+        # TODO: Guardar datos en archivos de texto
+
+        self.match_stadium_manager = MatchStadiumManager(self.stadiums, self.matches)
+        self.ticket_manager = TicketManager(self.matches)
+        self.restaurant_manager = RestaurantManager(self.stadiums)
+
+    def main_menu(self):
+        selection = 0
+
+        options = [
+            "Buscar Partidos",
+            "Comprar Entrada",
+            "Chequear Entrada",
+            "Asistir al partido",
+            "Estadisticas",
+            "Salir"
+        ]
+
+        while(selection != str(len(options))):
+            print("==================")
+            print("| Menu principal |")
+            print("==================")
+
+
+            print("Opciones:")
+            for i, option in enumerate(options):
+                print(f"{i + 1}. {option}")
+
+            selection = input("Seleccione una opcion: ")
+
+            print(f"Seleccionaste: {selection}")
+
+
+program = Program()
+program.main_menu()
