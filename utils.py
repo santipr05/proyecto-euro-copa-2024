@@ -1,6 +1,6 @@
 import math
 
-IS_DEV = True
+IS_DEV = False
 
 def printDebugInfo(message):
     if IS_DEV:

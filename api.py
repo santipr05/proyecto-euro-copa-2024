@@ -1,13 +1,36 @@
 import requests
+import json
 from data_objects import Team, Stadium, Match, Restaurant, RestaurantItem
 
+def get_API_data():
+    res_teams = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/teams.json')
+
+    teams_data = res_teams.json()
+
+    res_stadiums = requests.get("https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/stadiums.json")
+
+    stadiums_data = res_stadiums.json()
+
+    res_matches = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/matches.json')
+
+    matches_data = res_matches.json()
+
+    data = {
+        "teams": teams_data,
+        "stadiums": stadiums_data,
+        "matches": matches_data,
+    }
+
+    with open("datos.txt", "w") as archivo: 
+        json.dump(data, archivo, indent=4)
+
+    print("Se guardaron los datos proveninentes de la api")
+
 def getTeams():
-    res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/teams.json')
-    if(res.status_code != 200):
-        print("No se pudo obtener los datos de los equipos")
-        return
+    with open("datos.txt", "r") as archivo:
+        raw_data = json.load(archivo)
     
-    data = res.json()
+    data = raw_data['teams']
 
     teams = []
 
@@ -22,12 +45,10 @@ def findTeam(teams, team_id):
             return t
 
 def getStadiums():
-    res = requests.get("https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/stadiums.json")
-    if(res.status_code != 200):
-        print("No se pudo obtener los datos de los equipos")
-        return
+    with open("datos.txt", "r") as archivo:
+        raw_data = json.load(archivo)
     
-    data = res.json()
+    data = raw_data['stadiums']
 
     stadiums = []
 
@@ -51,13 +72,11 @@ def findStadium(stadiums, stadium_id):
             return s
 
 def getMatches(teams, stadiums):
-    res = requests.get('https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/matches.json')
-    if(res.status_code != 200):
-        print("No se pudo obtener los datos de los partidos")
-        return
+    with open("datos.txt", "r") as archivo:
+        raw_data = json.load(archivo)
     
-    data = res.json()
-
+    data = raw_data['matches']
+    
     matches = []
 
     for m in data: 

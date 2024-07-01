@@ -1,3 +1,4 @@
+import os
 import requests
 from utils import printDebugInfo
 from Menu import Menu
@@ -12,12 +13,17 @@ class Program:
 
     def __init__(self) -> None:
         printDebugInfo("Obteniendo datos de la api")
-        try:
-            self.teams = api.getTeams()
-            self.stadiums = api.getStadiums()
-            self.matches = api.getMatches(self.teams, self.stadiums)
-        except requests.exceptions.ConnectionError:
-            print("Error de coneccion: No se pudo obtener los datos de la api")
+
+        if not os.path.exists("datos.txt"):
+            try:
+                api.get_API_data()
+            except requests.exceptions.ConnectionError:
+                print("Error de coneccion: No se pudo obtener los datos de la api")
+                return
+
+        self.teams = api.getTeams()
+        self.stadiums = api.getStadiums()
+        self.matches = api.getMatches(self.teams, self.stadiums)
 
         # TODO: Guardar datos en archivos de texto
 
