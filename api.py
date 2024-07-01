@@ -36,7 +36,7 @@ def getStadiums():
         for r in s['restaurants']:
             restaurant = Restaurant(r['name'])
             for i in r['products']:
-                product = RestaurantItem(i['name'], i['price'], i['stock'], i['adicional'])
+                product = RestaurantItem(i['name'], float(i['price']), i['stock'], i['adicional'])
                 restaurant.products.append(product)
 
             stadium.restaurants.append(restaurant)

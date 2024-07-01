@@ -6,6 +6,17 @@ def printDebugInfo(message):
     if IS_DEV:
         print(f"[Debug]: {message}")
 
+def isPerfectNumber(n):
+  if n <= 1:
+    return False
+
+  divider_sum = 1
+  for divisor in range(2, n):
+    if n % divisor == 0:
+      divider_sum += divisor
+
+  return n == divider_sum
+
 def inputInt(propmt, errorMsg = "Ingrese un numero."):
     result = 0
     valid = False

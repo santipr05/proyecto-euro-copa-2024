@@ -25,12 +25,42 @@ class Program:
         self.ticket_manager = TicketManager(self.match_stadium_manager)
         self.restaurant_manager = RestaurantManager(self.stadiums)
 
+    def attend_to_match(self):
+        ticket_id = input("Ingrese el codigo de su ticket: ")
+        if not self.ticket_manager.checkTicket(ticket_id):
+            print("El ticket es invalido")
+            return
+        
+        ticket = self.ticket_manager.register_assist(ticket_id)
+
+        print(ticket)
+
+        if ticket == None:
+            return
+        
+        if not ticket.vip:
+            print("No es un usuario VIP, no puede comprar en el restarurante")
+            return
+
+        menu = Menu("Restaurante", {
+            "Comprar en restaurante": None
+        })
+
+        selection = -1
+        while selection == -1:
+            selection = menu.promt()
+            self.restaurant_manager.sellProduct(ticket)
+            if selection == 2:
+                break
+
+        menu.show()
+
     def main_menu(self):
         menu = Menu("Menu principal", {
             "Buscar Partidos": self.match_stadium_manager.menu,
             "Comprar Entrada": self.ticket_manager.sellTicket,
             "Chequear Entrada": self.ticket_manager.checkTicketMenu,
-            # "Asistir al partido": 0,
+            "Asistir al partido": self.attend_to_match,
             # "Estadisticas": 0,
         })
 

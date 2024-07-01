@@ -11,6 +11,18 @@ class TicketManager:
         self.pageSize = 8
         self.code = 0
 
+    def register_assist(self, ticket_id):
+        for t in self.tickets:
+            if t.code == ticket_id:
+                self.assists.append(ticket_id)
+                return t
+
+    def is_registed(self, ci):
+        for t in self.tickets:
+            if t.ci == ci:
+                return True
+        return False
+
     def occupied_seat(self, row, col):
         for t in self.tickets:
             if t.row == row and t.col == col:
@@ -22,13 +34,11 @@ class TicketManager:
         ci = inputInt("Ingrese su cedula: ")
         age = inputInt("Ingrese su edad: ")
 
-        menuPartido = Menu("Elejir partido", {
+        menuPartido = Menu("Buscar partido", {
             "Buscar por pais": None,            
             "Buscar por estadio": None,            
             "Buscar por fecha": None,            
         })
-
-        print("\nElejir partido")
 
         selection = -1
 
@@ -59,16 +69,22 @@ class TicketManager:
                     print("La busqueda no tubo resultados.")
                     continue
 
+            if selection == 4:
+                break
+
             matchesMenu = Menu("", {x.__str__(): None for x in matches})
 
             selection = matchesMenu.promt()
 
             # La persona canceló
-            if selection != 4 and selection != -1:
+            if selection != len(matchesMenu.actions) +1 and selection != -1:
                 selectedMatch = matches[selection - 1]
                 break
 
             selection = -1
+
+        if selectedMatch == None:
+            return
 
         row, col = 0, 0
         validRow = False
@@ -102,7 +118,7 @@ class TicketManager:
         vip = isVip.lower() == "si"
 
         self.code += 1
-        ticket = Ticket(name, ci, age, selectedMatch, vip, row, col, self.code)
+        ticket = Ticket(name, ci, age, selectedMatch, vip, row, col, str(self.code))
 
         cost = ticket.getCost()
         print(f"Subtotal: {cost}")
@@ -126,6 +142,7 @@ class TicketManager:
     def checkTicket(self, ticket_id):
         found = False
         for t in self.tickets:
+            print(t, ticket_id)
             if t.code == ticket_id:
                 found = True
                 break

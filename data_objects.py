@@ -20,6 +20,15 @@ class RestaurantItem:
         self.isFood = aditional == "plate"
         self.isAlcoholic = aditional == "alcoholic"
 
+    def __str__(self) -> str:
+        tipo = "Plato"
+        if not self.isFood:
+            tipo = "Bebida"
+            if self.isAlcoholic:
+                tipo += " Alcoholica"
+
+        return f"{self.name} | {self.price} - tipo: {tipo}"
+
 
 class Restaurant:
     def __init__(self, name) -> None:
@@ -60,6 +69,10 @@ class Ticket:
         self.col = col
         self.code = code
         self.cost = self.getCost()
+
+    def __str__(self) -> str:
+        return f"Ticket id: {self.code} nombre: {self.name} edad: {self.age}"
+        pass
 
     def getCost(self):
         cost = 35
